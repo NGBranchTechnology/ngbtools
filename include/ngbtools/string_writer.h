@@ -199,7 +199,7 @@ namespace ngbtools
 
             bool append(const char* ps)
             {
-                if (!ps or !*ps)
+                if (!ps || !*ps)
                     return true;
 
                 size_t len = strlen(ps);
@@ -219,7 +219,7 @@ namespace ngbtools
 
             bool append_repeated(char c, size_t number_of_times)
             {
-                if (!c or !number_of_times)
+                if (!c || !number_of_times)
                     return true;
 
                 char* wp = ensure_free_space(number_of_times);
@@ -231,7 +231,7 @@ namespace ngbtools
                 return true;
             }
 
-            bool append_repeated(const std::string_view& text, size_t number_of_times)
+            bool append_repeated(std::string_view text, size_t number_of_times)
             {
                 if (text.empty() || !number_of_times)
                     return true;
@@ -256,7 +256,7 @@ namespace ngbtools
 
             bool append_sized_string(const char* ps, size_t len)
             {
-                if (!ps or !*ps or !len)
+                if (!ps || !*ps or !len)
                     return true;
 
                 size_t actual_len = strlen(ps);
@@ -438,7 +438,7 @@ namespace ngbtools
 #endif
         };
 
-        inline std::string multiply(const std::string_view& text, uint32_t n)
+        inline std::string multiply(std::string_view text, uint32_t n)
         {
             writer result;
             result.append_repeated(text, n);

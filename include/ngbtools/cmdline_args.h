@@ -14,7 +14,7 @@ namespace ngbtools
 	class cmdline_args final
 	{
 	public:
-		cmdline_args(const std::string_view& header, const std::string_view& appname)
+		cmdline_args(std::string_view header, std::string_view appname)
 			:
 			m_header{ header },
 			m_appname{ appname },
@@ -54,7 +54,7 @@ namespace ngbtools
 			return validate_required_options();
 		}
 
-		cmdline_args& add_non_empty_path_list(const std::string_view& name, std::vector<fs::path>& path_list)
+		cmdline_args& add_non_empty_path_list(std::string_view name, std::vector<fs::path>& path_list)
 		{
 			m_pathlist_name = name;
 			m_pathlist_must_not_be_empty = true;
@@ -62,7 +62,7 @@ namespace ngbtools
 			return *this;
 		}
 
-		cmdline_args& add_flag(const std::string_view& name,
+		cmdline_args& add_flag(std::string_view name,
 			bool& param,
 			const std::string& description)
 		{
@@ -75,7 +75,7 @@ namespace ngbtools
 			return *this;
 		}
 
-		cmdline_args& add_option(const std::string_view& name,
+		cmdline_args& add_option(std::string_view name,
 			std::string& param,
 			const std::string& description)
 		{

@@ -16,7 +16,7 @@ namespace ngbtools
         bool get(std::string_view name, std::string& value)
         {
             std::vector<wchar_t> buffer;
-            const auto wide_var_name{ string::encode_as_utf16(name.data(), name.size()) };
+            const auto wide_var_name{ string::encode_as_utf16(name) };
             const auto dwBytesNeeded{ GetEnvironmentVariableW(wide_var_name.c_str(), nullptr, 0) };
             if (dwBytesNeeded)
             {
@@ -32,23 +32,23 @@ namespace ngbtools
 
         class string_expander final
         {
-
             enum class RECORDING_PATTERN
             {
                 PLAINTEXT,
                 ENVIRONMENT_VARIABLE,
             };
+
         public:
             string_expander()
                 :
-                m_variables{},
+                m_variables{nullptr},
                 m_use_environment_variables{ true }
             {
             }
 
             string_expander(const std::unordered_map<std::string, std::string>& variables, bool use_environment_variables = true)
                 :
-                m_variables{ variables },
+                m_variables{ &variables },
                 m_use_environment_variables{ use_environment_variables }
             {
             }
@@ -58,10 +58,10 @@ namespace ngbtools
             string_expander& operator=(const string_expander&) = delete;
             string_expander(string_expander&&) = delete;
             string_expander& operator=(string_expander&&) = delete;
-        
+
         public:
 
-            std::string expand(const std::string_view& svinput) const
+            std::string expand(std::string_view svinput) const
             {
                 const char* text = svinput.data();
 
@@ -94,7 +94,7 @@ namespace ngbtools
                             recording_pattern = RECORDING_PATTERN::ENVIRONMENT_VARIABLE;
                             isFirstCharAfterStartOfPattern = true;
                         }
-                        else 
+                        else
                         {
                             assert(recording_pattern == RECORDING_PATTERN::ENVIRONMENT_VARIABLE);
                             if (isFirstCharAfterStartOfPattern)
@@ -134,7 +134,7 @@ namespace ngbtools
             }
 
         private:
-            bool locate_variable(const std::string& variable, std::string& result) const
+            bool locate_variable(std::string_view variable, std::string& result) const
             {
                 const auto p = locate_variable(variable);
                 if (p)
@@ -145,7 +145,7 @@ namespace ngbtools
                 if (!m_use_environment_variables)
                     return false;
 
-                if(environment_variables::get(variable, result))
+                if (environment_variables::get(variable, result))
                 {
                     return true;
                 }
@@ -153,27 +153,31 @@ namespace ngbtools
                 return false;
             }
 
-            const char* locate_variable(const std::string& variable) const
+            const char* locate_variable(std::string_view variable) const
             {
-                const auto item{ m_variables.find(variable) };
-                if (item != m_variables.end())
+                if (m_variables)
                 {
-                    return item->second.c_str();
+                    const std::string key{ variable };
+                    const auto item{ m_variables->find(key) };
+                    if (item != m_variables->end())
+                    {
+                        return item->second.c_str();
+                    }
                 }
                 return nullptr;
             }
 
         private:
-            const std::unordered_map<std::string, std::string>& m_variables;
+            const std::unordered_map<std::string, std::string>* m_variables;            
             const bool m_use_environment_variables;
         };
 
-        inline auto expand(const std::string_view& text, const std::unordered_map<std::string, std::string>& variables, bool use_environment_variables = true)
+        inline auto expand(std::string_view text, const std::unordered_map<std::string, std::string>& variables, bool use_environment_variables = true)
         {
             return string_expander{ variables, true }.expand(text);
         }
 
-        inline auto expand(const std::string_view& text)
+        inline auto expand(std::string_view text)
         {
             return string_expander().expand(text);
         }

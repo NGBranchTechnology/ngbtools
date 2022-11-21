@@ -16,7 +16,7 @@ namespace ngbtools
             return !p || !*p;
         }
 
-        inline bool is_empty(const std::string_view& txt)
+        inline bool is_empty(std::string_view txt)
         {
             return txt.empty();
         }
@@ -66,7 +66,7 @@ namespace ngbtools
             return text.length();
         }
 
-        inline size_t length(const std::string_view& text)
+        inline size_t length(std::string_view text)
         {
             return text.length();
         }
@@ -81,61 +81,57 @@ namespace ngbtools
             return a == b;
         }
 
-        inline bool equals(const wchar_t* a, const wchar_t* b)
+        inline bool equals(wchar_t a, wchar_t b)
         {
-            if (!a)
-                return !b;
+            return a == b;
+        }
 
-            if (!b)
+        inline bool equals(std::wstring_view a, std::wstring_view b)
+        {
+            if (a.empty())
+                return b.empty();
+
+            if (b.empty())
                 return false;
 
-            return wcscmp(a, b) == 0;
+            return wcscmp(a.data(), b.data()) == 0;
         }
 
-        inline bool equals(const std::wstring& a, const std::wstring& b)
+        inline bool equals_nocase(std::wstring_view a, std::wstring_view b)
         {
-            return equals(a.c_str(), b.c_str());
-        }
+            if (a.empty())
+                return b.empty();
 
-        inline bool equals(const char* a, const char* b)
-        {
-            if (!a)
-                return !b;
-
-            if (!b)
+            if (b.empty())
                 return false;
 
-            return strcmp(a, b) == 0;
+            return _wcsicmp(a.data(), b.data()) == 0;
         }
 
-        inline bool equals(const std::string& a, const std::string& b)
+        inline bool equals(std::string_view a, std::string_view b)
         {
-            return equals(a.c_str(), b.c_str());
-        }
+            if (a.empty())
+                return b.empty();
 
-        inline bool equals_nocase(char a, char b)
-        {
-            return tolower(a) == tolower(b);
-        }
-
-        inline bool equals_nocase(const char* a, const char* b)
-        {
-            if (!a)
-                return !b;
-
-            if (!b)
+            if (b.empty())
                 return false;
 
-            return _strcmpi(a, b) == 0;
+            return strcmp(a.data(), b.data()) == 0;
         }
 
-        inline bool equals_nocase(const std::string& a, const std::string& b)
+        inline bool equals_nocase(std::string_view a, std::string_view b)
         {
-            return equals_nocase(a.c_str(), b.c_str());
+            if (a.empty())
+                return b.empty();
+
+            if (b.empty())
+                return false;
+
+            return _stricmp(a.data(), b.data()) == 0;
         }
 
 
-        inline std::string join(const std::vector<std::string>& items, const std::string& joiner)
+        inline std::string join(const std::vector<std::string>& items, std::string_view joiner)
         {
             std::string combined;
             bool first = true;
@@ -150,7 +146,7 @@ namespace ngbtools
             return combined;
         }
 
-        const std::string uppercase(const std::string_view& text)
+        const std::string uppercase(std::string_view text)
         {
             std::string result{ text };
             auto p = const_cast<char*>(result.c_str());
@@ -158,7 +154,7 @@ namespace ngbtools
             return result;
         }
 
-        inline std::string lowercase(const std::string_view& text)
+        inline std::string lowercase(std::string_view text)
         {
             std::string result{ text };
             const auto p = const_cast<char*>(result.c_str());
@@ -218,18 +214,14 @@ namespace ngbtools
             }
             return result;
         }
-		inline size_t Length(const char* lpszString)
-		{
-			if (!lpszString)
-				return 0;
 
-			return strlen(lpszString);
-		}
-
-		inline std::wstring encode_as_utf16(const char* utf8_encoded_string, size_t utf8_len)
+		inline std::wstring encode_as_utf16(std::string_view utf8_encoded_text)
 		{
-			// handle nullptr gracefully
-			if (!utf8_encoded_string or !utf8_len)
+            const auto utf8_len = utf8_encoded_text.size();
+            const auto utf8_encoded_string = utf8_encoded_text.data();
+			
+            // handle nullptr gracefully
+			if (!utf8_encoded_string || !utf8_len)
 				return {};
 
             // we try the stack first (because that is of an order of magnitudes faster)
@@ -278,19 +270,6 @@ namespace ngbtools
 			return {};
 		}
 
-		inline auto encode_as_utf16(const std::string& utf8_encoded_string)
-		{
-			return encode_as_utf16(utf8_encoded_string.c_str(), utf8_encoded_string.length());
-		}
-
-		inline auto encode_as_utf16(const char* utf8_encoded_string)
-		{
-			// handle nullptr gracefully
-			if (!utf8_encoded_string)
-				return std::wstring{};
-
-			return encode_as_utf16(utf8_encoded_string, Length(utf8_encoded_string));
-		}
 	}
 
 

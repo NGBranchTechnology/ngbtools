@@ -46,7 +46,7 @@ namespace ngbtools
 		inline std::string encode_as_utf8(const wchar_t* unicode_string, size_t wide_len)
 		{
 			// handle nullptr gracefully
-			if (!unicode_string or !wide_len)
+			if (!unicode_string || !wide_len)
 				return {};
 
 			// we try the stack first (because that is of an order of magnitudes faster)

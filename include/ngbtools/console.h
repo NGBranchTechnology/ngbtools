@@ -81,7 +81,7 @@ namespace ngbtools
             const auto output_cp{ ::GetConsoleOutputCP() };
 
             // handle nullptr gracefully
-            if (!unicode_string or !wide_len)
+            if (!unicode_string || !wide_len)
                 return std::string();
 
             // we try the stack first (because that is of an order of magnitudes faster)
