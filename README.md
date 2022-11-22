@@ -9,9 +9,9 @@ As co-owner of NG Branch Technology I decided to open-source some of our modern 
 - `ngbtools` is meant to be included as a GIT submodule in projects that need common infrastructure, without having to reinvent every wheel (some wheel reinvention is I believe necessary for programmers)
 
 - `ngbtools` does not have an example folder that is constantly outdated, but instead a set of tools that are actually useful.
-    - `pathed` allows you to edit environment variables much more comfortable than anything built into Windows Terminal.
-    - `su` allows you to run commands with superuser privileges.
-    - `ddupe` ok, is more of an example for the data horders amongst us, but it has some (well one) innovative idea (at least that's what I think and that isn't much).
+    - [`pathed`](tools/pathed/README.md) allows you to edit environment variables much more comfortable than anything built into Windows Terminal.
+    - [`su`](tools/su/README.md) allows you to run commands with superuser privileges.
+    - [`ddupe`](tools/ddupe/README.md) ok, is more of an example for the data horders amongst us, but it has some (well one) innovative idea (at least that's what I think and that isn't much).
 
 ## General principles
 
@@ -30,19 +30,19 @@ This is where I invite you take a look at `ngbtools\console.h`. At its most basi
 
 Now, your naive approach would be something like this:
 
-    std::cout << "std::cout << \"Hello Wörld!\"" << std::endl;
-    puts("puts(Hello Wörld!)");
+    std::cout << "std::cout << \"Hello WÃ¶rld!\"" << std::endl;
+    puts("puts(Hello WÃ¶rld!)");
 
 But it fails hard:
 
     C:\Users\GersonKurz>test_console_encoding
-    std::cout << "Hello W÷rld!"
-    puts(Hello W÷rld!)
+    std::cout << "Hello WÃ·rld!"
+    puts(Hello WÃ·rld!)
 
 Also if you say "I'm gonna fix it by prepending my strings with u8" you're out of luck: neither function accepts u8 strings. But `ngbtools` does:
 
     C:\Users\GersonKurz>test_console_encoding
-    console::writeline(u8"Hello Wörld!")
+    console::writeline(u8"Hello WÃ¶rld!")
 
 So, two points here: 
 
