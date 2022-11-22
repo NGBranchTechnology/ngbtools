@@ -22,7 +22,7 @@ Plus, I have rewritten this tool many times just to play with programming langua
 As a starting point use `/?` or `/HELP` to get a list of options:
 
 	C:\Users\GersonKurz>ddupe /?
-	$${\color{green}Detect(and possibly delete) duplicates - Version 5.0}$$
+	Detect(and possibly delete) duplicates - Version 5.0}
 	Freeware written by NG Branch Technology GmbH (http://ng-branch-technology.com)
 
 	USAGE: ddupe PATH {PATH} [OPTIONS]
