@@ -15,12 +15,12 @@ The most simple case is you su without any other arguments:
 This will bring up a new terminal with admin privileges. It is likely that UAC will popup depending on your current system settings. If you are already administrator, the result is this:
 
 	C:\Users\GersonKurz>su
-	$${\color{red}You are already already running as admin}$$
+	You are already already running as admin}
 
 You can use `/?` or `/HELP` to provide a list of options, which ends up being pretty small:
 
 	C:\Users\GersonKurz>su /?
-	$${\color{green}SU - Run programs as superuser on Windows - Version 5.0}$$
+	SU - Run programs as superuser on Windows - Version 5.0}
 	Freeware written by NG Branch Technology GmbH (http://ng-branch-technology.com)
 
 	USAGE: su [cmd [options]]
