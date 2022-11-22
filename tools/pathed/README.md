@@ -6,7 +6,7 @@ Arguably the best tool in this collection, `pathed` can be used to edit the `PAT
 As a starting point use `/?` or `/HELP` to get a list of options:
 
 	C:\temp>pathed /?
-	$${\color{green}PATH var editor - Version 5.0}$$
+	PATH var editor - Version 5.0}
 	Freeware written by NG Branch Technology GmbH (http://ng-branch-technology.com)
 
 	USAGE: pathed [OPTIONS]
@@ -47,16 +47,16 @@ So, what to make of this? Well, let's run PATHED without any options first.
 	18 C:\Program Files\MSI-Simplified
 	19 C:\NGBT\NGBT_PUBLIC\ngbtools\bin\x64\Release
 	20 %USERPROFILE%\AppData\Local\Microsoft\WindowsApps
-	   $${\color{green}C:\Users\GersonKurz\AppData\Local\Microsoft\WindowsApps}$$
+	   C:\Users\GersonKurz\AppData\Local\Microsoft\WindowsApps}
 	21 %USERPROFILE%\.dotnet\tools
-	   $${\color{green}C:\Users\GersonKurz\.dotnet\tools}$$
+	   C:\Users\GersonKurz\.dotnet\tools}
 	22 C:\Users\GersonKurz\AppData\Local\Programs\Microsoft VS Code\bin
 	23 C:\msys64\usr\bin
 	24 C:\Program Files (x86)\WiX Toolset v3.11\bin
 	25 C:\Users\GersonKurz\AppData\Roaming\npm
 	26 C:\Program Files\Azure Data Studio\bin
 	27 %USERPROFILE%\go\bin
-	   $${\color{green}C:\Users\GersonKurz\go\bin}$$
+	   C:\Users\GersonKurz\go\bin
 	28 C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\Tools
 
 Interesting. This output is surely much nicer that simply typing `PATH` and visually scanning the data for the directory you're looking for. Also note that % variables are expanded and listed in green: the green bit is the underlying folder in your filesystem.
@@ -74,7 +74,7 @@ Example:
 will add the current folder to the top of the list. At the end of the tool, you'll see these lines:
 
 	set PATH=C:\temp;C:\WINDOWS\system32;C:\WINDOWS;C:\Python310-32;C:\Python310-32\Scripts;C:\Tools;C:\Program Files\SciTE;C:\Projects\flutter\bin;C:\Program Files\Git\bin;C:\WINDOWS\system32\WindowsPowerShell\v1.0;C:\Program Files\Go\bin;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files (x86)\p-nand-q.com\GTools;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\ProAKT\;C:\Program Files\dotnet\;C:\Program Files\CMake\bin;C:\Program Files\MSI-Simplified;C:\NGBT\NGBT_PUBLIC\ngbtools\bin\x64\Release;%USERPROFILE%\AppData\Local\Microsoft\WindowsApps;%USERPROFILE%\.dotnet\tools;C:\Users\GersonKurz\AppData\Local\Programs\Microsoft VS Code\bin;C:\msys64\usr\bin;C:\Program Files (x86)\WiX Toolset v3.11\bin;C:\Users\GersonKurz\AppData\Roaming\npm;C:\Program Files\Azure Data Studio\bin;%USERPROFILE%\go\bin;C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\Tools
-	$${\color{red}Warning: in order to be able to write back changes, use this command with either /MACHINE or /USER}$$
+	Warning: in order to be able to write back changes, use this command with either /MACHINE or /USER
 
 What does this last line mean? It tells you that while you can copy this commandline and execute it in terminal, a tool cannot really change the PATH of the running terminal. (Only SET can do that, and SET is not an executable, it is built into the terminal). 
 
@@ -82,16 +82,16 @@ So how is `pathed` useful then? Ah, here we come to the magic part:
 
 	C:\temp>pathed /APPEND %CD% /USER
 	00 %USERPROFILE%\AppData\Local\Microsoft\WindowsApps
-	   $${\color{green}C:\Users\GersonKurz\AppData\Local\Microsoft\WindowsApps}$$
+	   C:\Users\GersonKurz\AppData\Local\Microsoft\WindowsApps}
 	01 %USERPROFILE%\.dotnet\tools
-	   $${\color{green}C:\Users\GersonKurz\.dotnet\tools}$$
+	   C:\Users\GersonKurz\.dotnet\tools}
 	02 C:\Users\GersonKurz\AppData\Local\Programs\Microsoft VS Code\bin
 	03 C:\msys64\usr\bin
 	04 C:\Program Files (x86)\WiX Toolset v3.11\bin
 	05 C:\Users\GersonKurz\AppData\Roaming\npm
 	06 C:\Program Files\Azure Data Studio\bin
 	07 %USERPROFILE%\go\bin
-	   $${\color{green}C:\Users\GersonKurz\go\bin}$$
+	   C:\Users\GersonKurz\go\bin}
 	08 C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\Tools
 	09 C:\temp
 	Setting changed, now broadcasting WM_SETTINGCHANGE
