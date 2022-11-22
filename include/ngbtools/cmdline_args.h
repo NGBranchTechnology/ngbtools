@@ -11,6 +11,9 @@
 
 namespace ngbtools
 {
+	/// <summary>
+	/// This is a nice little class to handle command line input for tools
+	/// </summary>
 	class cmdline_args final
 	{
 	public:

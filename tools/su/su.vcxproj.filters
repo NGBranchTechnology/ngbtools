@@ -18,12 +18,12 @@
     <ClCompile Include="precomp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pathed.cpp">
+    <ClCompile Include="su.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="pathed.manifest" />
+    <Manifest Include="su.manifest" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="precomp.h">

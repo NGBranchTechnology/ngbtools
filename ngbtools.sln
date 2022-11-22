@@ -7,6 +7,33 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ddupe", "tools\ddupe\ddupe.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pathed", "tools\pathed\pathed.vcxproj", "{191BC82A-4998-48A7-9DDE-EE36E148514E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{708D8641-2D1F-4320-BBB0-023D83507CD8}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "su", "tools\su\su.vcxproj", "{8DD048BB-A032-4FA6-A156-485F80CF6153}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{CF03F663-475D-49A7-8725-4F22A85840C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{1E95829F-3ACA-4AC4-AA1B-09011328D939}"
+	ProjectSection(SolutionItems) = preProject
+		include\ngbtools\cmdline_args.h = include\ngbtools\cmdline_args.h
+		include\ngbtools\console.h = include\ngbtools\console.h
+		include\ngbtools\directory.h = include\ngbtools\directory.h
+		include\ngbtools\environment_variables.h = include\ngbtools\environment_variables.h
+		include\ngbtools\file.h = include\ngbtools\file.h
+		include\ngbtools\logging.h = include\ngbtools\logging.h
+		include\ngbtools\md5hash.h = include\ngbtools\md5hash.h
+		include\ngbtools\path.h = include\ngbtools\path.h
+		include\ngbtools\process.h = include\ngbtools\process.h
+		include\ngbtools\string.h = include\ngbtools\string.h
+		include\ngbtools\string_writer.h = include\ngbtools\string_writer.h
+		include\ngbtools\windows_errors.h = include\ngbtools\windows_errors.h
+		include\ngbtools\wstring.h = include\ngbtools\wstring.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,9 +58,22 @@ Global
 		{191BC82A-4998-48A7-9DDE-EE36E148514E}.Release|x64.Build.0 = Release|x64
 		{191BC82A-4998-48A7-9DDE-EE36E148514E}.Release|x86.ActiveCfg = Release|Win32
 		{191BC82A-4998-48A7-9DDE-EE36E148514E}.Release|x86.Build.0 = Release|Win32
+		{8DD048BB-A032-4FA6-A156-485F80CF6153}.Debug|x64.ActiveCfg = Debug|x64
+		{8DD048BB-A032-4FA6-A156-485F80CF6153}.Debug|x64.Build.0 = Debug|x64
+		{8DD048BB-A032-4FA6-A156-485F80CF6153}.Debug|x86.ActiveCfg = Debug|Win32
+		{8DD048BB-A032-4FA6-A156-485F80CF6153}.Debug|x86.Build.0 = Debug|Win32
+		{8DD048BB-A032-4FA6-A156-485F80CF6153}.Release|x64.ActiveCfg = Release|x64
+		{8DD048BB-A032-4FA6-A156-485F80CF6153}.Release|x64.Build.0 = Release|x64
+		{8DD048BB-A032-4FA6-A156-485F80CF6153}.Release|x86.ActiveCfg = Release|Win32
+		{8DD048BB-A032-4FA6-A156-485F80CF6153}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4279CC38-342D-4189-B39B-E2A0530CB037} = {CF03F663-475D-49A7-8725-4F22A85840C1}
+		{191BC82A-4998-48A7-9DDE-EE36E148514E} = {CF03F663-475D-49A7-8725-4F22A85840C1}
+		{8DD048BB-A032-4FA6-A156-485F80CF6153} = {CF03F663-475D-49A7-8725-4F22A85840C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0CE1D63-9E55-4E0E-BC76-6E9A163F97C5}

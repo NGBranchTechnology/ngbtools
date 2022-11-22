@@ -50,7 +50,7 @@ namespace ngbtools
                 // if (and only if) the origin still uses the cache, we need to do so as well
                 if (!m_dynamic_buffer)
                 {
-                    assert(m_writepos < array_size(m_builtin_buffer));
+                    assert(m_writepos < std::size(m_builtin_buffer));
                     memcpy(m_builtin_buffer, source.m_builtin_buffer, m_writepos);
                 }
             }
@@ -75,7 +75,7 @@ namespace ngbtools
                 // if (and only if) the origin still uses the cache, we need to do so as well
                 if (!m_dynamic_buffer)
                 {
-                    assert(m_writepos < array_size(m_builtin_buffer));
+                    assert(m_writepos < std::size(m_builtin_buffer));
                     memcpy(m_builtin_buffer, source.m_builtin_buffer, m_writepos);
                 }
                 return *this;
@@ -163,7 +163,7 @@ namespace ngbtools
             {
                 if (m_dynamic_buffer == nullptr)
                 {
-                    if (m_writepos < array_size(m_builtin_buffer))
+                    if (m_writepos < std::size(m_builtin_buffer))
                     {
                         m_builtin_buffer[m_writepos++] = c;
                         return true;
@@ -186,13 +186,13 @@ namespace ngbtools
                     m_dynamic_buffer[m_writepos++] = c;
                     return true;
                 }
-                char* np = (char*)malloc(array_size(m_builtin_buffer) * 2);
+                char* np = (char*)malloc(std::size(m_builtin_buffer) * 2);
                 if (!np)
                     return false;
 
                 memcpy(np, m_builtin_buffer, m_writepos);
                 m_dynamic_buffer = np;
-                m_dynamic_size = array_size(m_builtin_buffer) * 2;
+                m_dynamic_size = std::size(m_builtin_buffer) * 2;
                 m_dynamic_buffer[m_writepos++] = c;
                 return true;
             }
@@ -295,7 +295,7 @@ namespace ngbtools
             {
                 if (m_dynamic_buffer == nullptr)
                 {
-                    if ((m_writepos + bytes_written) >= array_size(m_builtin_buffer))
+                    if ((m_writepos + bytes_written) >= std::size(m_builtin_buffer))
                     {
                         assert(false);
                     }
@@ -326,7 +326,7 @@ namespace ngbtools
                 if (m_dynamic_buffer == nullptr)
                 {
                     // and have enough space left
-                    if (space_total < array_size(m_builtin_buffer))
+                    if (space_total < std::size(m_builtin_buffer))
                     {
                         return m_builtin_buffer + m_writepos;
                     }
@@ -355,7 +355,7 @@ namespace ngbtools
                     m_dynamic_size = size_needed;
                     return m_dynamic_buffer + m_writepos;;
                 }
-                size_t size_needed = array_size(m_builtin_buffer) * 2;
+                size_t size_needed = std::size(m_builtin_buffer) * 2;
                 while (size_needed < space_total)
                 {
                     size_needed *= 2;

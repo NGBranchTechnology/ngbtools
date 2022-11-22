@@ -20,6 +20,7 @@ namespace ngbtools
         {
             return txt.empty();
         }
+
         inline bool is_empty(const wchar_t* p)
         {
             return !p || !*p;
@@ -162,11 +163,12 @@ namespace ngbtools
             return result;
         }
 
-        inline std::vector<std::string> split(const char* text, const char* separators, bool handle_quotation_marks)
+        inline std::vector<std::string> split(std::string_view svtext, std::string_view svseparators, bool handle_quotation_marks = false)
         {
             std::vector<std::string> result;
 
             bool is_recording_quoted_string = false;
+            auto text = svtext.data();
             if (text)
             {
                 auto start = text;
@@ -204,7 +206,7 @@ namespace ngbtools
                         continue;
                     }
 
-                    if (strchr(separators, c))
+                    if (std::strchr(svseparators.data(), c))
                     {
                         assert(text - start >= 1);
                         result.push_back(std::string{ start, (size_t)(text - start - 1) });

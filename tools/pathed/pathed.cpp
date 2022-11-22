@@ -36,7 +36,7 @@ namespace ngbtools
 			bool use_getenv_cmd = false;
 
 			cmdline_args args{
-				CONSOLE_GREEN "PATH var editor - Version 5.0" CONSOLE_STANDARD "\r\n"
+				CONSOLE_FOREGROUND_GREEN "PATH var editor - Version 5.0" CONSOLE_STANDARD "\r\n"
 				"Freeware written by NG Branch Technology GmbH (http://ng-branch-technology.com)",
 				"pathed" };
 			args.add_flag("MACHINE", use_machine_reg, "Read path from MACHINE");
@@ -65,7 +65,7 @@ namespace ngbtools
 				}
 				catch (...)
 				{
-					console::writeline(CONSOLE_RED "You must pass an integer index to the /REMOVE option" CONSOLE_STANDARD);
+					console::writeline(CONSOLE_FOREGROUND_RED "You must pass an integer index to the /REMOVE option" CONSOLE_STANDARD);
 					return 1;
 				}
 			}
@@ -149,7 +149,7 @@ namespace ngbtools
 				else 
 				{
 					console::formatline("\r\nset {}={}", m_variable_name, combined);
-					console::writeline(CONSOLE_RED "Warning: in order to be able to write back changes, use this command with either /MACHINE or /USER" CONSOLE_STANDARD);
+					console::writeline(CONSOLE_FOREGROUND_RED "Warning: in order to be able to write back changes, use this command with either /MACHINE or /USER" CONSOLE_STANDARD);
 				}
 			}
 			return 0;
@@ -167,7 +167,7 @@ namespace ngbtools
 		{
 			if (index == m_index_to_remove)
 			{
-				console::formatline(CONSOLE_RED "{:02} {} <- requested to remove" CONSOLE_STANDARD, index, path_element);
+				console::formatline(CONSOLE_FOREGROUND_RED "{:02} {} <- requested to remove" CONSOLE_STANDARD, index, path_element);
 				++index;
 				apply_changes = true;
 				return false;
@@ -180,7 +180,7 @@ namespace ngbtools
 
 			if (!directory::exists(expanded_token))
 			{
-				console::formatline(CONSOLE_RED "{:02} {} <- does not exist" CONSOLE_STANDARD, index, path_element);
+				console::formatline(CONSOLE_FOREGROUND_RED "{:02} {} <- does not exist" CONSOLE_STANDARD, index, path_element);
 				file_has_had_errors = true;
 				if (m_remove_broken_folders)
 				{
@@ -203,11 +203,11 @@ namespace ngbtools
 				{
 					add_this_file = false;
 					file_has_had_errors = true;
-					console::formatline(CONSOLE_RED "{:02} {} <- duplicate of {:02} removed" CONSOLE_STANDARD, index, path_element, duplicate_item->second);
+					console::formatline(CONSOLE_FOREGROUND_RED "{:02} {} <- duplicate of {:02} removed" CONSOLE_STANDARD, index, path_element, duplicate_item->second);
 				}
 				else
 				{
-					console::formatline(CONSOLE_BLUE "{:02} {} <- duplicate of {:02}" CONSOLE_STANDARD, index, path_element, duplicate_item->second);
+					console::formatline(CONSOLE_FOREGROUND_BLUE "{:02} {} <- duplicate of {:02}" CONSOLE_STANDARD, index, path_element, duplicate_item->second);
 
 				}
 			}
@@ -219,7 +219,7 @@ namespace ngbtools
 
 				if (!string::equals(expanded_token, path_element))
 				{
-					console::formatline(CONSOLE_GREEN "   {}" CONSOLE_STANDARD, expanded_token);
+					console::formatline(CONSOLE_FOREGROUND_GREEN "   {}" CONSOLE_STANDARD, expanded_token);
 					
 				}
 			}
@@ -263,7 +263,8 @@ namespace ngbtools
 			{
 				if (!quiet)
 				{
-					console::formatline("RegOpenKeyExW() failed with {}", GetLastError());
+					logging::report_windows_error(GetLastError(), FUNCTION_CONTEXT,
+						fmt::format("RegOpenKeyExW({}) failed", wstring::encode_as_utf8(reg_path)));
 				}
 				return false;
 			}
@@ -283,7 +284,8 @@ namespace ngbtools
 			{
 				if (!quiet)
 				{
-					console::formatline("RegQueryValueExW() failed with {}", GetLastError());
+					logging::report_windows_error(GetLastError(), FUNCTION_CONTEXT,
+						fmt::format("RegQueryValueExW({}\\{}) failed", wstring::encode_as_utf8(reg_path), m_variable_name));
 				}
 				return false;
 			}
@@ -305,7 +307,6 @@ namespace ngbtools
 				&hKey);
 			if (hResult != S_OK)
 			{
-				console::formatline("RegOpenKeyExW() failed with {}", GetLastError());
 				return false;
 			}
 			std::vector<wchar_t> buffer;
@@ -323,7 +324,8 @@ namespace ngbtools
 				&dwSize);
 			if (hResult != S_OK)
 			{
-				console::formatline("RegQueryValueExW() failed with {}", GetLastError());
+				logging::report_windows_error(GetLastError(), FUNCTION_CONTEXT,
+					fmt::format("RegOpenKeyExW({}) failed", wstring::encode_as_utf8(reg_path)));
 				::RegCloseKey(hKey);
 				return false;
 			}
@@ -338,7 +340,8 @@ namespace ngbtools
 			);
 			if (hResult != S_OK)
 			{
-				console::formatline("RegSetValueExW() failed with {}", GetLastError());
+				logging::report_windows_error(GetLastError(), FUNCTION_CONTEXT,
+					fmt::format("RegSetValueExW({}\\{}) failed", wstring::encode_as_utf8(reg_path), m_variable_name));
 				::RegCloseKey(hKey);
 				return false;
 			}

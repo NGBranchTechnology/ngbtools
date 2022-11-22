@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ngbtools">
-      <UniqueIdentifier>{ae867f9f-fbe3-4aa2-9ff8-a15c9f1a31bb}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ddupe.cpp">
@@ -35,29 +32,8 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\ngbtools\console.h">
-      <Filter>ngbtools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ngbtools\md5hash.h">
-      <Filter>ngbtools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ngbtools\string.h">
-      <Filter>ngbtools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ngbtools\wstring.h">
-      <Filter>ngbtools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ngbtools\directory.h">
-      <Filter>ngbtools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ngbtools\string_writer.h">
-      <Filter>ngbtools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ngbtools\cmdline_args.h">
-      <Filter>ngbtools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ngbtools\environment_variables.h">
-      <Filter>ngbtools</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

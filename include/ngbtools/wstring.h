@@ -34,17 +34,11 @@ namespace ngbtools
 			return wcscmp(a, b) == 0;
 		}
 
-
-		inline size_t Length(const wchar_t* lpwsString)
+		inline std::string encode_as_utf8(std::wstring_view wstr)
 		{
-			if (!lpwsString)
-				return 0;
+			const wchar_t* unicode_string = wstr.data();
+			size_t wide_len = wstr.size();
 
-			return wcslen(lpwsString);
-		}
-
-		inline std::string encode_as_utf8(const wchar_t* unicode_string, size_t wide_len)
-		{
 			// handle nullptr gracefully
 			if (!unicode_string || !wide_len)
 				return {};
@@ -82,20 +76,6 @@ namespace ngbtools
 				size_to_allocate *= 2;
 			}
 			return {};
-		}
-
-		inline auto encode_as_utf8(const std::wstring& unicode_string)
-		{
-			return encode_as_utf8(unicode_string.c_str(), unicode_string.length());
-		}
-
-		inline auto encode_as_utf8(const wchar_t* unicode_string)
-		{
-			// handle nullptr gracefully
-			if (!unicode_string)
-				return std::string{};
-
-			return encode_as_utf8(unicode_string, Length(unicode_string));
 		}
 	}
 }

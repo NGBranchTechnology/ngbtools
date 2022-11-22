@@ -8,6 +8,9 @@ namespace fs = std::filesystem;
 #include <ngbtools/console.h>
 #include <ngbtools/string_writer.h>
 #include <ngbtools/cmdline_args.h>
+#include <ngbtools/logging.h>
+#include <ngbtools/file.h>
+#include <ngbtools/windows_errors.h>
 
 namespace ngbtools
 {
@@ -39,7 +42,7 @@ namespace ngbtools
 		int run(int argc, wchar_t* argv[])
 		{
 			cmdline_args args{
-				CONSOLE_GREEN "Detect(and possibly delete) duplicates - Version 5.0" CONSOLE_STANDARD "\r\n"
+				CONSOLE_FOREGROUND_GREEN "Detect(and possibly delete) duplicates - Version 5.0" CONSOLE_STANDARD "\r\n"
 				"Freeware written by NG Branch Technology GmbH (http://ng-branch-technology.com)",
 				"ddupe" };
 			args.add_flag("RECURSIVE", m_recursive, "recurse subdirectories");
@@ -64,38 +67,46 @@ namespace ngbtools
 
 	private:
 
-		std::string read_checksum(const std::wstring& pathname, uintmax_t file_size)
+		bool read_checksum(std::string_view pathname, uintmax_t file_size, std::string& result)
 		{
 			MD5 checksum;
 			++m_checksums_calculated;
 			m_bytes_used_for_checksums += file_size;
 
-			HANDLE hFile = ::CreateFileW(pathname.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-			if(hFile != INVALID_HANDLE_VALUE)
+			const auto wstr_pathname{ string::encode_as_utf16(pathname) };
+
+			HANDLE hFile = ::CreateFileW(wstr_pathname.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+			if (hFile == INVALID_HANDLE_VALUE)
 			{
-				while (file_size)
-				{
-					MD5::size_type bytes_to_read = (MD5::size_type)file_size;
-					if (bytes_to_read > m_buffer.size())
-						bytes_to_read = (MD5::size_type)m_buffer.size();
-				
-					DWORD bytesRead = 0;
-					if (!::ReadFile(hFile, &m_buffer[0], bytes_to_read, &bytesRead, nullptr))
-					{
-						// warn with error
-					}
-					assert(bytesRead == bytes_to_read);
-					checksum.update((const unsigned char*)&m_buffer[0], bytes_to_read);
-					file_size -= bytes_to_read;
-				}
-				checksum.finalize();
+				logging::report_windows_error(GetLastError(), FUNCTION_CONTEXT,
+					fmt::format("CreateFileW({}) failed", pathname));
+				return false;
 			}
-			return checksum.hexdigest();
+			while (file_size)
+			{
+				MD5::size_type bytes_to_read = (MD5::size_type)file_size;
+				if (bytes_to_read > m_buffer.size())
+					bytes_to_read = (MD5::size_type)m_buffer.size();
+				
+				DWORD bytesRead = 0;
+				if (!::ReadFile(hFile, &m_buffer[0], bytes_to_read, &bytesRead, nullptr))
+				{
+					logging::report_windows_error(GetLastError(), FUNCTION_CONTEXT,
+						fmt::format("ReadFile({}) failed", pathname));
+					return false;
+				}
+				assert(bytesRead == bytes_to_read);
+				checksum.update((const unsigned char*)&m_buffer[0], bytes_to_read);
+				file_size -= bytes_to_read;
+			}
+			checksum.finalize();
+			result = checksum.hexdigest();
+			return true;
 		}
 
-		bool check_for_duplicates_in(const fs::path& item, std::unordered_map<std::string, std::wstring>& checksum_lookup, uintmax_t file_size)
+		bool check_for_duplicates_in(const fs::path& item, std::unordered_map<std::string, std::string>& checksum_lookup, uintmax_t file_size)
 		{
-			auto pathname{ item.wstring() };
+			auto pathname{ wstring::encode_as_utf8(item.wstring()) };
 			const auto filename{ item.filename().wstring() };
 
 			++m_total_files;
@@ -114,10 +125,14 @@ namespace ngbtools
 				checksum = wstring::encode_as_utf8(filename.substr(1, 32));
 				if (m_verify)
 				{
-					const auto actual_checksum = read_checksum(pathname, file_size);
-					if (actual_checksum != checksum)
+					std::string actual_checksum;
+					if (!read_checksum(pathname, file_size, actual_checksum))
 					{
-						console::formatline(CONSOLE_RED "Checksum falsified for {}", wstring::encode_as_utf8(pathname));
+						return false;
+					}
+					else if (actual_checksum != checksum)
+					{
+						console::formatline(CONSOLE_FOREGROUND_RED "Checksum falsified for {}", pathname);
 						console::formatline("-----> is: {}", checksum);
 						console::formatline("should be: {}" CONSOLE_STANDARD, actual_checksum);
 
@@ -127,31 +142,27 @@ namespace ngbtools
 							const auto newname = string::encode_as_utf16("{" + actual_checksum + "}") + filename.substr(34);
 							const auto newpath{ item.parent_path() / fs::path{newname} };
 							console::formatline("renaming as : {}", newpath.string());
+							
 							if (!::MoveFileExW(
-								pathname.c_str(),
+								string::encode_as_utf16(pathname).c_str(),
 								newpath.wstring().c_str(),
 								0))
 							{
 								const auto hResult{ GetLastError() };
+								logging::report_windows_error(hResult, FUNCTION_CONTEXT,
+									fmt::format("Unable to rename {} as {}",
+										pathname,
+										wstring::encode_as_utf8(newpath.wstring())));
 								if (hResult == ERROR_FILE_EXISTS)
 								{
-									console::formatline("Windows-Error {}: unable to rename file, because it already exists", hResult);
 									if (m_delete)
 									{
-										if (!::DeleteFileW(pathname.c_str()))
-										{
-											console::formatline("Windows-Error {}: unable to delete {}", hResult, wstring::encode_as_utf8(item));
-										}
-										else
+										if (file::remove(pathname))
 										{
 											++m_files_deleted;
 											m_bytes_used_for_deleted_files += file_size;
 										}
 									}
-								}
-								else
-								{
-									console::formatline("Windows-Error %ld: unable to rename file, aborting", hResult);
 								}
 								return false;
 							}
@@ -162,10 +173,8 @@ namespace ngbtools
 			}
 			else
 			{
-				checksum = read_checksum(pathname, file_size);
-				if (checksum.empty())
+				if (!read_checksum(pathname, file_size, checksum))
 				{
-					console::formatline("Unable to read checksum for {}, assuming file is unique", wstring::encode_as_utf8(pathname));
 					return false;
 				}
 				if (m_rename)
@@ -175,39 +184,33 @@ namespace ngbtools
 					console::formatline("Renaming as: {}", newpath.string());
 
 					if (!::MoveFileExW(
-						pathname.c_str(),
+						string::encode_as_utf16(pathname).c_str(),
 						newpath.wstring().c_str(),
 						0))
 					{
 						const auto hResult{ GetLastError() };
+						logging::report_windows_error(hResult, FUNCTION_CONTEXT,
+							fmt::format("Unable to rename {} as {}",
+								pathname,
+								wstring::encode_as_utf8(newpath.wstring())));
+
 						if (hResult == ERROR_FILE_EXISTS)
 						{
-							console::formatline("Windows-Error {}: unable to rename file, because it already exists", hResult);
 							if (m_delete)
 							{
-								if (!::DeleteFileW(pathname.c_str()))
-								{
-									console::formatline("Windows-Error {}: unable to delete {}", GetLastError(), wstring::encode_as_utf8(pathname));
+								if (!file::remove(pathname))
 									return false;
-								}
-								else
-								{
-									++m_files_deleted;
-									m_bytes_used_for_deleted_files += file_size;
-								}
+
+								++m_files_deleted;
+								m_bytes_used_for_deleted_files += file_size;
 							}
 							return true;
-						}
-						else
-						{
-							console::formatline("Windows-Error %ld: unable to rename file, aborting", hResult);
-							// ok, we'll continue using the old filename and assume the check is still valid
 						}
 					}
 					else
 					{
 						// let's change the pathname so that we can use that going forward
-						pathname = newpath;
+						pathname = wstring::encode_as_utf8(newpath.wstring());
 					}
 				}
 			}
@@ -215,22 +218,17 @@ namespace ngbtools
 			const auto& existing_filename = checksum_lookup.find(checksum);
 			if (existing_filename != checksum_lookup.end())
 			{
-				console::formatline(CONSOLE_RED "{} already exists as\r\n{}" CONSOLE_STANDARD,
-					wstring::encode_as_utf8(pathname),
-					wstring::encode_as_utf8(existing_filename->second));
+				console::formatline(CONSOLE_FOREGROUND_RED "{} already exists as\r\n{}" CONSOLE_STANDARD,
+					pathname,
+					existing_filename->second);
 
 				if (m_delete)
 				{
-					if (!::DeleteFileW(pathname.c_str()))
-					{
-						console::formatline("Windows-Error {}: unable to delete {}", GetLastError(), wstring::encode_as_utf8(pathname));
+					if (!file::remove(pathname))
 						return false;
-					}
-					else
-					{
-						++m_files_deleted;
-						m_bytes_used_for_deleted_files += file_size;
-					}
+
+					++m_files_deleted;
+					m_bytes_used_for_deleted_files += file_size;
 				}
 			}
 			else
@@ -249,7 +247,7 @@ namespace ngbtools
 				if (lookup_item.second->size() < 2)
 					continue;
 
-				std::unordered_map<std::string, std::wstring> checksum_lookup;
+				std::unordered_map<std::string, std::string> checksum_lookup;
 				for (const auto& item : *(lookup_item.second))
 				{
 					check_for_duplicates_in(item, checksum_lookup, lookup_item.first);
@@ -259,7 +257,7 @@ namespace ngbtools
 
 			const auto finish = std::chrono::high_resolution_clock::now();
 			const auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-			console::formatline(CONSOLE_GREEN "Took {:L} microseconds to scan {:L} files for duplicates" CONSOLE_STANDARD, microseconds.count(), m_total_files);
+			console::formatline(CONSOLE_FOREGROUND_GREEN "Took {:L} microseconds to scan {:L} files for duplicates" CONSOLE_STANDARD, microseconds.count(), m_total_files);
 			if(m_checksums_calculated)
 				console::formatline("Calculated {:L} checksums using {:L} bytes", m_checksums_calculated, m_bytes_used_for_checksums);
 			if (m_checksums_reused)
@@ -316,7 +314,7 @@ namespace ngbtools
 			}
 			const auto finish = std::chrono::high_resolution_clock::now();
 			const auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-			console::formatline(CONSOLE_GREEN "Took {:L} microseconds to scan {:L} files in {:L} folders" CONSOLE_STANDARD, microseconds.count(), m_total_files, m_total_folders);
+			console::formatline(CONSOLE_FOREGROUND_GREEN "Took {:L} microseconds to scan {:L} files in {:L} folders" CONSOLE_STANDARD, microseconds.count(), m_total_files, m_total_folders);
 		}
 
 	private:

@@ -195,16 +195,11 @@
     <Manifest Include="ddupe.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\ngbtools\cmdline_args.h" />
-    <ClInclude Include="..\..\include\ngbtools\console.h" />
-    <ClInclude Include="..\..\include\ngbtools\directory.h" />
-    <ClInclude Include="..\..\include\ngbtools\environment_variables.h" />
-    <ClInclude Include="..\..\include\ngbtools\md5hash.h" />
-    <ClInclude Include="..\..\include\ngbtools\string.h" />
-    <ClInclude Include="..\..\include\ngbtools\string_writer.h" />
-    <ClInclude Include="..\..\include\ngbtools\wstring.h" />
     <ClInclude Include="precomp.h" />
     <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

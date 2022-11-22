@@ -11,44 +11,74 @@ namespace ngbtools
      **************************************************************************************************/
     namespace console
     {
-        enum class color : char
-        {
-            BLACK = 0,
-            DARKBLUE = FOREGROUND_BLUE,
-            DARKGREEN = FOREGROUND_GREEN,
-            DARKCYAN = FOREGROUND_GREEN | FOREGROUND_BLUE,
-            DARKRED = FOREGROUND_RED,
-            DARKMAGENTA = FOREGROUND_RED | FOREGROUND_BLUE,
-            DARKYELLOW = FOREGROUND_RED | FOREGROUND_GREEN,
-            DARKGRAY = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,
-            GRAY = FOREGROUND_INTENSITY,
-            BLUE = FOREGROUND_INTENSITY | FOREGROUND_BLUE,
-            GREEN = FOREGROUND_INTENSITY | FOREGROUND_GREEN,
-            CYAN = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE,
-            RED = FOREGROUND_INTENSITY | FOREGROUND_RED,
-            MAGENTA = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE,
-            YELLOW = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN,
-            WHITE = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,
-        };
 
+#ifdef NGBTOOLS_USE_VIRTUAL_CONSOLE_COMMANDS
+#define VESC_SEQUENCE(__VESC_CODE__) "\x1b[" #__VESC_CODE__ "m"
+#define CONSOLE_STANDARD                    VESC_SEQUENCE(0)	// Default	Returns all attributes to the default state prior to modification
+#define CONSOLE_BOLD                        VESC_SEQUENCE(1)	// Bold / Bright	Applies brightness / intensity flag to foreground color
+#define CONSOLE_NO_BOLD                     VESC_SEQUENCE(22)   //	No bold / bright	Removes brightness / intensity flag from foreground color
+#define CONSOLE_UNDERLINE                   VESC_SEQUENCE(4)    // Underline	Adds underline
+#define CONSOLE_NO_UNDERLINE                VESC_SEQUENCE(24)	// No underline	Removes underline
+#define CONSOLE_NEGATIVE                    VESC_SEQUENCE(7)    // Negative	Swaps foreground and background colors
+#define CONSOLE_POSITIVE                    VESC_SEQUENCE(27)	// Positive(No negative)	Returns foreground / background to normal
+#define CONSOLE_FOREGROUND_BLACK            VESC_SEQUENCE(30)	// Foreground Black	Applies non - bold / bright black to foreground
+#define CONSOLE_FOREGROUND_RED              VESC_SEQUENCE(31)	// Foreground Red	Applies non - bold / bright red to foreground
+#define CONSOLE_FOREGROUND_GREEN            VESC_SEQUENCE(32)	// Foreground Green	Applies non - bold / bright green to foreground
+#define CONSOLE_FOREGROUND_YELLOW           VESC_SEQUENCE(33)	// Foreground Yellow	Applies non - bold / bright yellow to foreground
+#define CONSOLE_FOREGROUND_BLUE             VESC_SEQUENCE(34)	// Foreground Blue	Applies non - bold / bright blue to foreground
+#define CONSOLE_FOREGROUND_MAGENTA          VESC_SEQUENCE(35)	// Foreground Magenta	Applies non - bold / bright magenta to foreground
+#define CONSOLE_FOREGROUND_CYAN             VESC_SEQUENCE(36)	// Foreground Cyan	Applies non - bold / bright cyan to foreground
+#define CONSOLE_FOREGROUND_WHITE            VESC_SEQUENCE(37)	// Foreground White	Applies non - bold / bright white to foreground
+#define CONSOLE_FOREGROUND_DEFAULT          VESC_SEQUENCE(39)	// Foreground Default	Applies only the foreground portion of the defaults(see 0)
+#define CONSOLE_BACKGROUND_BLACK            VESC_SEQUENCE(40)  // Background Black	Applies non - bold / bright black to background
+#define CONSOLE_BACKGROUND_RED              VESC_SEQUENCE(41)  // Background Red	Applies non - bold / bright red to background
+#define CONSOLE_BACKGROUND_GREEN            VESC_SEQUENCE(42)  // Background Green	Applies non - bold / bright green to background
+#define CONSOLE_BACKGROUND_YELLOW           VESC_SEQUENCE(43)  // Background Yellow	Applies non - bold / bright yellow to background
+#define CONSOLE_BACKGROUND_BLUE             VESC_SEQUENCE(44)  // Background Blue	Applies non - bold / bright blue to background
+#define CONSOLE_BACKGROUND_MAGENTA          VESC_SEQUENCE(45)  // Background Magenta	Applies non - bold / bright magenta to background
+#define CONSOLE_BACKGROUND_CYAN             VESC_SEQUENCE(46)  // Background Cyan	Applies non - bold / bright cyan to background
+#define CONSOLE_BACKGROUND_WHITE            VESC_SEQUENCE(47)  // Background White	Applies non - bold / bright white to background
+#define CONSOLE_BACKGROUND_DEFAULT          VESC_SEQUENCE(49)  // Background Default	Applies only the background portion of the defaults(see 0)
+#define CONSOLE_FOREGROUND_BRIGHT_BLACK     VESC_SEQUENCE(90)  // Bright Foreground Black	Applies bold / bright black to foreground
+#define CONSOLE_FOREGROUND_BRIGHT_RED       VESC_SEQUENCE(91)  // Bright Foreground Red	Applies bold / bright red to foreground
+#define CONSOLE_FOREGROUND_BRIGHT_GREEN     VESC_SEQUENCE(92)  // Bright Foreground Green	Applies bold / bright green to foreground
+#define CONSOLE_FOREGROUND_BRIGHT_YELLOW    VESC_SEQUENCE(93)  // Bright Foreground Yellow	Applies bold / bright yellow to foreground
+#define CONSOLE_FOREGROUND_BRIGHT_BLUE      VESC_SEQUENCE(94)  // Bright Foreground Blue	Applies bold / bright blue to foreground
+#define CONSOLE_FOREGROUND_BRIGHT_MAGENTA   VESC_SEQUENCE(95)  // Bright Foreground Magenta	Applies bold / bright magenta to foreground
+#define CONSOLE_FOREGROUND_BRIGHT_CYAN      VESC_SEQUENCE(96)  // Bright Foreground Cyan	Applies bold / bright cyan to foreground
+#define CONSOLE_FOREGROUND_BRIGHT_WHITE     VESC_SEQUENCE(97)  // Bright Foreground White	Applies bold / bright white to foreground
+#define CONSOLE_BACKGROUND_BRIGHT_BLACK     VESC_SEQUENCE(100)	Bright Background Black	Applies bold / bright black to background
+#define CONSOLE_BACKGROUND_BRIGHT_RED       VESC_SEQUENCE(101)	Bright Background Red	Applies bold / bright red to background
+#define CONSOLE_BACKGROUND_BRIGHT_GREEN     VESC_SEQUENCE(102)	Bright Background Green	Applies bold / bright green to background
+#define CONSOLE_BACKGROUND_BRIGHT_YELLOW    VESC_SEQUENCE(103)	Bright Background Yellow	Applies bold / bright yellow to background
+#define CONSOLE_BACKGROUND_BRIGHT_BLUE      VESC_SEQUENCE(104)	Bright Background Blue	Applies bold / bright blue to background
+#define CONSOLE_BACKGROUND_BRIGHT_MAGENTA   VESC_SEQUENCE(105)	Bright Background Magenta	Applies bold / bright magenta to background
+#define CONSOLE_BACKGROUND_BRIGHT_CYAN      VESC_SEQUENCE(106)	Bright Background Cyan	Applies bold / bright cyan to background
+#define CONSOLE_BACKGROUND_BRIGHT_WHITE     VESC_SEQUENCE(107)	Bright Background White	Applies bold / bright white to background
 
-#define CONSOLE_BLUE "\x1b\x01"
-#define CONSOLE_GREEN "\x1b\x02"
-#define CONSOLE_RED "\x1b\x0C"
+#else
 
-#define CONSOLE_WHITE "\x1b\x0F"
+#define CONSOLE_FOREGROUND_BRIGHT_BLACK "\x1b\x00"
+#define CONSOLE_FOREGROUND_BRIGHT_BLUE "\x1b\x09"
+#define CONSOLE_FOREGROUND_BRIGHT_CYAN "\x1b\x0b"
+#define CONSOLE_FOREGROUND_BLUE "\x1b\x01"
+#define CONSOLE_FOREGROUND_CYAN "\x1b\x03"
+#define CONSOLE_FOREGROUND_GRAY "\x1b\x07"
+#define CONSOLE_FOREGROUND_GREEN "\x1b\x02"
+#define CONSOLE_FOREGROUND_MAGENTA "\x1b\x05"
+#define CONSOLE_FOREGROUND_RED "\x1b\x04"
+#define CONSOLE_FOREGROUND_YELLOW "\x1b\x06"
+#define CONSOLE_FOREGROUND_BRIGHT_GRAY "\x1b\x08"
+#define CONSOLE_FOREGROUND_BRIGHT_GREEN "\x1b\x0a"
+#define CONSOLE_FOREGROUND_BRIGHT_INTENSITY "\x1b\x08"
+#define CONSOLE_FOREGROUND_BRIGHT_MAGENTA "\x1b\x0d"
+#define CONSOLE_FOREGROUND_BRIGHT_RED "\x1b\x0c"
+#define CONSOLE_FOREGROUND_BRIGHT_WHITE "\x1b\x0f"
+#define CONSOLE_FOREGROUND_BRIGHT_YELLOW "\x1b\x0e"
+
 #define CONSOLE_STANDARD "\x1b\xFF"
+#endif
 
-        /*
-        #define FOREGROUND_BLUE      0x0001 // text color contains blue.
-        #define FOREGROUND_GREEN     0x0002 // text color contains green.
-        #define FOREGROUND_RED       0x0004 // text color contains red.
-        #define FOREGROUND_INTENSITY 0x0008 // text color is intensified.
-        #define BACKGROUND_BLUE      0x0010 // background color contains blue.
-        #define BACKGROUND_GREEN     0x0020 // background color contains green.
-        #define BACKGROUND_RED       0x0040 // background color contains red.
-        #define BACKGROUND_INTENSITY 0x0080 // background color is intensified.
-        */
         struct console_context
         {
             HANDLE hConsoleOutput;
@@ -76,8 +106,11 @@ namespace ngbtools
         }
 
 
-        inline std::string encode_as_output_bytes(const wchar_t* unicode_string, size_t wide_len)
+        inline std::string encode_as_output_bytes(std::wstring_view text)
         {
+            const wchar_t* unicode_string = text.data();
+            const size_t wide_len = text.size();
+
             const auto output_cp{ ::GetConsoleOutputCP() };
 
             // handle nullptr gracefully
@@ -177,7 +210,7 @@ namespace ngbtools
             return true;
         }
 
-        inline bool write_unicode_output(const std::wstring& utf16_encoded_string)
+        inline bool write_unicode_output(std::wstring_view utf16_encoded_string)
         {
             auto& cc{ get_context() };
 
@@ -190,7 +223,7 @@ namespace ngbtools
             DWORD chars_written = 0;
 
             const auto output_bytes{
-                encode_as_output_bytes(utf16_encoded_string.c_str(), utf16_encoded_string.size())
+                encode_as_output_bytes(utf16_encoded_string)
             };
 
             if (!::WriteFile(cc.hConsoleOutput, &output_bytes[0], (DWORD)(output_bytes.size()), &chars_written, nullptr))
@@ -206,12 +239,12 @@ namespace ngbtools
 
 
 
-        inline bool do_write_output_as_unicode(const std::string& utf8_encoded_string)
+        inline bool do_write_output_as_unicode(std::string_view utf8_encoded_string)
         {
             auto& cc{ get_context() };
             const auto utf16_encoded_string{ string::encode_as_utf16(utf8_encoded_string) };
             const auto output_bytes{
-                encode_as_output_bytes(utf16_encoded_string.c_str(), utf16_encoded_string.size())
+                encode_as_output_bytes(utf16_encoded_string)
             };
 
             DWORD chars_written = 0;
@@ -224,7 +257,7 @@ namespace ngbtools
             return true;
         }
 
-        inline bool write_output_as_unicode(const std::string& utf8_encoded_string)
+        inline bool write_output_as_unicode(std::string_view utf8_encoded_string)
         {
             auto& cc{ get_context() };
 
@@ -234,7 +267,10 @@ namespace ngbtools
             if (cc.write_output_has_failed_once || !ensure_output_handle())
                 return false;
 
-            const char* p = utf8_encoded_string.c_str();
+#ifdef NGBTOOLS_USE_VIRTUAL_CONSOLE_COMMANDS
+            return do_write_output_as_unicode(utf8_encoded_string);
+#else
+            const char* p = utf8_encoded_string.data();
             while (true)
             {
                 const char* q = strchr(p, '\x1b');
@@ -263,8 +299,10 @@ namespace ngbtools
 
                 p = q + 2;
             }
+#endif
         }
-        inline bool write(const std::string& text)
+
+        inline bool write(std::string_view text)
         {
             return write_output_as_unicode(text);
         }
@@ -272,6 +310,11 @@ namespace ngbtools
         inline bool writeline(const std::string& text)
         {
             return write(text + "\r\n");
+        }
+
+        inline bool writeline(std::u8string_view text)
+        {
+            return write(std::string((const char*)text.data()) + "\r\n");
         }
 
         template <typename... Args> bool formatline(const std::string_view text, Args&&... args)

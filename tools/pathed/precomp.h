@@ -32,10 +32,5 @@
 // see http://msdn.microsoft.com/de-de/library/b0084kay.aspx
 #define FUNCTION_CONTEXT __FUNCTION__ "[" S__LINE__ "]"
 
-template <typename T> constexpr size_t array_size(T& array)
-{
-	return sizeof(array) / sizeof(array[0]);
-}
-
 #define FMT_HEADER_ONLY
 #include <fmt/format.h>

@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{191BC82A-4998-48A7-9DDE-EE36E148514E}</ProjectGuid>
-    <RootNamespace>pathed</RootNamespace>
+    <ProjectGuid>{8DD048BB-A032-4FA6-A156-485F80CF6153}</ProjectGuid>
+    <RootNamespace>su</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -114,7 +114,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ManifestFile>pathed.manifest</ManifestFile>
+      <ManifestFile>su.manifest</ManifestFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,7 +137,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ManifestFile>pathed.manifest</ManifestFile>
+      <ManifestFile>su.manifest</ManifestFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,7 +156,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ManifestFile>pathed.manifest</ManifestFile>
+      <ManifestFile>su.manifest</ManifestFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,11 +179,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ManifestFile>pathed.manifest</ManifestFile>
+      <ManifestFile>su.manifest</ManifestFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="pathed.cpp" />
+    <ClCompile Include="su.cpp" />
     <ClCompile Include="precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -192,7 +192,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="pathed.manifest" />
+    <Manifest Include="su.manifest" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="precomp.h" />
